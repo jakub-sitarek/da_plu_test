@@ -30,7 +30,10 @@ def method_put():
     return {"method": "POST"}
 
 @app.get("/auth")
-def auth(response: Response, password = "tak" , password_hash = "nie"):
+def auth(response: Response, password = None , password_hash = None):
+    if password is None or password_hash is None:
+        response.status_code = 401
+        return
     hashed = hashlib.sha512(password.encode("utf-8")).hexdigest()
     if password_hash == hashed:
         response.status_code = 204
