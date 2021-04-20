@@ -2,8 +2,11 @@ from fastapi import FastAPI, Response, status
 from pydantic import BaseModel
 import hashlib
 from typing import Optional
+from datetime import date, timedelta, datetime
+import json
 
 app = FastAPI()
+app.reg = []
 
 @app.get("/")
 def root():
@@ -39,3 +42,17 @@ def auth(response: Response, password = None , password_hash = None):
         response.status_code = 204
     else:
         response.status_code = 401
+
+
+@app.post("/register", status_code=201)
+def register(name, surname):
+    today = datetime.now().date()
+    new_person = {
+        "id":len(app.reg),
+        "name":name,
+        "surname":surname,
+        "register_date": str(today),
+        "vaccination_date": str(today+timedelta(days=len(surname))
+    }
+    app.reg.append(new_person)
+    return json.dumps(new_person)
